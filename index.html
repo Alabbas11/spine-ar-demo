@@ -1,149 +1,59 @@
 <!DOCTYPE html>
 <html>
+
 <head>
+
   <meta charset="UTF-8">
 
   <meta
     name="viewport"
-    content="width=device-width, initial-scale=1.0, user-scalable=no"
+    content="width=device-width, initial-scale=1.0"
   >
 
   <title>Spine AR</title>
 
-  <!-- A-Frame -->
+
+  <!-- A-FRAME -->
   <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
 
-  <!-- MindAR -->
+
+  <!-- MIND AR -->
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
 
-  <!-- FBX Support -->
-  <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.5.4/dist/aframe-extras.min.js"></script>
+
+  <!-- FBX LOADER -->
+  <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.5.4/dist/aframe-extras.loaders.min.js"></script>
 
 
   <style>
 
-    html,
     body {
-      width: 100%;
-      height: 100%;
       margin: 0;
       overflow: hidden;
-      background: black;
-      font-family: Arial, sans-serif;
     }
-
-
-    #startScreen {
-
-      position: fixed;
-
-      top: 0;
-      left: 0;
-
-      width: 100%;
-      height: 100%;
-
-      background: #111;
-
-      z-index: 999999;
-
-      display: flex;
-
-      flex-direction: column;
-
-      align-items: center;
-
-      justify-content: center;
-
-    }
-
-
-    #startButton {
-
-      border: 0;
-
-      background: white;
-
-      color: black;
-
-      padding: 18px 30px;
-
-      border-radius: 50px;
-
-      font-size: 18px;
-
-      font-weight: bold;
-
-      cursor: pointer;
-
-    }
-
-
-    #message {
-
-      color: white;
-
-      margin-top: 20px;
-
-      font-size: 14px;
-
-      text-align: center;
-
-    }
-
 
   </style>
-</head>
 
+</head>
 
 
 <body>
 
 
-<!-- شاشة البداية -->
-
-<div id="startScreen">
-
-  <button id="startButton">
-    START CAMERA
-  </button>
-
-  <div id="message">
-    Tap to start AR
-  </div>
-
-</div>
-
-
-
-<!-- AR Scene -->
-
 <a-scene
 
-  id="arScene"
-
-  mindar-image="
-    imageTargetSrc: ./targets.mind;
-    autoStart: false;
-    uiLoading: no;
-    uiScanning: yes;
-    uiError: yes;
-  "
+  mindar-image="imageTargetSrc: ./targets.mind;"
 
   color-space="sRGB"
 
   renderer="
     colorManagement: true;
     physicallyCorrectLights: true;
-    antialias: true;
-    alpha: true;
   "
 
   vr-mode-ui="enabled: false"
 
   device-orientation-permission-ui="enabled: false"
-
-  embedded
 
 >
 
@@ -166,9 +76,9 @@
 
     type="ambient"
 
-    intensity="2"
+    color="#FFFFFF"
 
-    color="#FFFFFF">
+    intensity="2">
 
   </a-light>
 
@@ -177,11 +87,11 @@
 
     type="directional"
 
-    position="1 2 3"
+    color="#FFFFFF"
 
-    intensity="3"
+    intensity="2"
 
-    color="#FFFFFF">
+    position="1 1 2">
 
   </a-light>
 
@@ -196,7 +106,7 @@
     mindar-image-target="targetIndex: 0">
 
 
-    <!-- SPINE MODEL -->
+    <!-- SPINE -->
 
     <a-entity
 
@@ -204,7 +114,7 @@
 
       fbx-model="src: url(./spine.FBX)"
 
-      position="0 0 0.20"
+      position="0 0 0.2"
 
       rotation="0 0 0"
 
@@ -235,9 +145,9 @@
 
       width="0.20"
 
-      height="0.005"
+      height="0.004"
 
-      depth="0.005"
+      depth="0.004"
 
       color="#FFFFFF">
 
@@ -266,9 +176,9 @@
 
       width="0.25"
 
-      height="0.005"
+      height="0.004"
 
-      depth="0.005"
+      depth="0.004"
 
       color="#FFFFFF">
 
@@ -297,9 +207,9 @@
 
       width="0.20"
 
-      height="0.005"
+      height="0.004"
 
-      depth="0.005"
+      depth="0.004"
 
       color="#FFFFFF">
 
@@ -315,215 +225,61 @@
 
 <script>
 
+  const scene = document.querySelector("a-scene");
 
-const scene = document.querySelector("#arScene");
+  const spine = document.querySelector("#spineModel");
 
-const startScreen =
-document.querySelector("#startScreen");
+  const target = document.querySelector("#target");
 
-const startButton =
-document.querySelector("#startButton");
 
-const message =
-document.querySelector("#message");
+  scene.addEventListener("arReady", () => {
 
-const spine =
-document.querySelector("#spineModel");
+    console.log("CAMERA READY");
 
-const target =
-document.querySelector("#target");
+  });
 
 
+  scene.addEventListener("arError", (event) => {
 
-/* -------------------------
+    console.log("CAMERA ERROR");
 
-   FBX STATUS
+    console.log(event);
 
--------------------------- */
+  });
 
 
-spine.addEventListener(
-"model-loaded",
+  spine.addEventListener("model-loaded", () => {
 
-() => {
+    console.log("SPINE LOADED");
 
-  console.log("SPINE LOADED");
+  });
 
-}
 
-);
+  spine.addEventListener("model-error", (event) => {
 
+    console.log("SPINE ERROR");
 
+    console.log(event.detail);
 
-spine.addEventListener(
-"model-error",
+  });
 
-(event) => {
 
-  console.error(
-    "SPINE ERROR",
-    event.detail
-  );
+  target.addEventListener("targetFound", () => {
 
-}
+    console.log("TARGET FOUND");
 
-);
+  });
 
 
+  target.addEventListener("targetLost", () => {
 
-/* -------------------------
+    console.log("TARGET LOST");
 
-   START CAMERA
-
--------------------------- */
-
-
-startButton.addEventListener(
-
-"click",
-
-async () => {
-
-
-  startButton.disabled = true;
-
-  message.innerHTML =
-  "Starting camera...";
-
-
-  try {
-
-
-    const mindarSystem =
-    scene.systems[
-      "mindar-image-system"
-    ];
-
-
-    await mindarSystem.start();
-
-
-    console.log(
-      "CAMERA STARTED"
-    );
-
-
-    startScreen.style.display =
-    "none";
-
-
-  }
-
-  catch(error) {
-
-
-    console.error(
-      "CAMERA ERROR",
-      error
-    );
-
-
-    message.innerHTML =
-    "Camera could not start.<br>Please allow camera permission.";
-
-
-    startButton.disabled =
-    false;
-
-
-  }
-
-
-}
-
-);
-
-
-
-/* -------------------------
-
-   AR READY
-
--------------------------- */
-
-
-scene.addEventListener(
-
-"arReady",
-
-() => {
-
-  console.log(
-    "AR READY"
-  );
-
-}
-
-);
-
-
-
-scene.addEventListener(
-
-"arError",
-
-(event) => {
-
-  console.error(
-    "AR ERROR",
-    event
-  );
-
-
-  message.innerHTML =
-  "AR camera error";
-
-}
-
-);
-
-
-
-/* -------------------------
-
-   TARGET
-
--------------------------- */
-
-
-target.addEventListener(
-
-"targetFound",
-
-() => {
-
-  console.log(
-    "TARGET FOUND"
-  );
-
-}
-
-);
-
-
-
-target.addEventListener(
-
-"targetLost",
-
-() => {
-
-  console.log(
-    "TARGET LOST"
-  );
-
-}
-
-);
-
+  });
 
 </script>
 
 
 </body>
+
 </html>
