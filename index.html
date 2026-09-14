@@ -1,18 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-
-  <meta name="viewport"
-        content="width=device-width,
-        initial-scale=1.0,
-        user-scalable=no">
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <title>Spine AR Demo</title>
 
   <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
-
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/aframe-extras@7.5.4/dist/aframe-extras.loaders.min.js"></script>
 
   <style>
     body {
@@ -21,7 +16,6 @@
     }
   </style>
 </head>
-
 <body>
 
 <a-scene
@@ -31,56 +25,67 @@
   vr-mode-ui="enabled: false"
   device-orientation-permission-ui="enabled: false">
 
-  <a-camera
-    position="0 0 0"
-    look-controls="enabled: false">
-  </a-camera>
-
+  <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
   <a-entity mindar-image-target="targetIndex: 0">
 
+    <!-- العمود الفقري -->
+    <a-entity
+      id="spineModel"
+      fbx-model="src: url(./spine.FBX)"
+      position="0 -0.35 0.35"
+      rotation="0 180 0"
+      scale="0.002 0.002 0.002"
+      animation="property: position; from: 0 -0.7 0; to: 0 -0.35 0.35; dur: 1200; easing: easeOutCubic">
+    </a-entity>
 
-    <!-- مجسم تجريبي -->
-
-    <a-box
-      position="0 0 0.25"
-      rotation="0 0 0"
-      scale="0.35 0.35 0.35"
-      color="#4CC3D9">
-
-      <a-animation
-        attribute="rotation"
-        to="0 360 0"
-        dur="5000"
-        repeat="indefinite">
-      </a-animation>
-
-    </a-box>
-
-
-    <!-- العنوان -->
-
+    <!-- عناوين -->
     <a-text
-      value="HUMAN SPINE"
-      position="-0.42 0.55 0.1"
-      scale="0.35 0.35 0.35"
-      color="#FFFFFF">
-    </a-text>
-
-
-    <!-- النص السفلي -->
-
-    <a-text
-      value="AR EXPERIENCE"
-      position="-0.38 -0.55 0.1"
+      value="CERVICAL"
+      position="0.28 0.42 0.1"
       scale="0.25 0.25 0.25"
       color="#FFFFFF">
     </a-text>
 
+    <a-text
+      value="THORACIC"
+      position="-0.62 0.02 0.1"
+      scale="0.25 0.25 0.25"
+      color="#FFFFFF">
+    </a-text>
+
+    <a-text
+      value="LUMBAR"
+      position="0.28 -0.38 0.1"
+      scale="0.25 0.25 0.25"
+      color="#FFFFFF">
+    </a-text>
+
+    <!-- خطوط بسيطة -->
+    <a-box position="0.15 0.43 0.08" width="0.22" height="0.004" depth="0.004" color="#FFFFFF"></a-box>
+    <a-box position="-0.25 0.03 0.08" width="0.30" height="0.004" depth="0.004" color="#FFFFFF"></a-box>
+    <a-box position="0.14 -0.37 0.08" width="0.20" height="0.004" depth="0.004" color="#FFFFFF"></a-box>
 
   </a-entity>
-
 </a-scene>
+
+<script>
+  const spine = document.querySelector("#spineModel");
+
+  spine.addEventListener("model-loaded", () => {
+    const obj = spine.getObject3D("mesh");
+    if (!obj) return;
+
+    obj.traverse((node) => {
+      if (node.isMesh) {
+        node.castShadow = true;
+        node.receiveShadow = true;
+      }
+    });
+
+    console.log("FBX model loaded successfully");
+  });
+</script>
 
 </body>
 </html>
